@@ -1,4 +1,4 @@
-package com.goit5.testapp.mvc;
+package com.goit5.testapp.feature.time.pojo;
 
 import lombok.Data;
 

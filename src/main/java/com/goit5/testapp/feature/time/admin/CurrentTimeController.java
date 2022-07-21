@@ -1,5 +1,10 @@
-package com.goit5.testapp.mvc;
+package com.goit5.testapp.feature.time.admin;
 
+import com.goit5.testapp.feature.time.pojo.CurrentTimeRequest;
+import com.goit5.testapp.feature.time.pojo.CurrentTimeResponse;
+import com.goit5.testapp.feature.time.service.CurrentTimeService;
+import com.goit5.testapp.feature.time.InvalidTimeZoneException;
+import com.goit5.testapp.mvc.LocalizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +23,24 @@ public class CurrentTimeController {
         ModelAndView result = new ModelAndView("current-time");
         result.addObject("time", currentTimeService.getCurrentTime(timezone));
         return result;
+    }
+
+    @ResponseBody
+    @GetMapping("/getAsString")
+    public String getCurrentTimeAsString(@RequestParam(required = false, name = "tz", defaultValue = "UTC") String timezone) {
+        return currentTimeService.getCurrentTime(timezone);
+    }
+
+    @ResponseBody
+    @GetMapping("/getAsObject")
+    public CurrentTimeResponse getCurrentTimeAsObject(@RequestParam(required = false, name = "tz", defaultValue = "UTC") String timezone) {
+        try {
+            return CurrentTimeResponse.success(currentTimeService.getCurrentTime(timezone));
+        } catch (InvalidTimeZoneException ex) {
+            ex.printStackTrace();
+
+            return CurrentTimeResponse.failed(CurrentTimeResponse.Error.invalidTimezone);
+        }
     }
 
     @PostMapping("/post-x-form-url-encoded")
