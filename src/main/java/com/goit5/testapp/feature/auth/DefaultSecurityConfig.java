@@ -17,24 +17,16 @@ public class DefaultSecurityConfig {
     private final CustomAuthProvider authProvider;
 
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                    .authorizeRequests()
+                    .antMatchers("/api/v1/**").permitAll()
+                    .anyRequest()
+                    .authenticated()
                 .and()
-                .httpBasic()
+                    .httpBasic()
                 .and()
-//                .authorizeRequests()
-//                .antMatchers(HttpMethod.GET, "/auth").hasAnyRole()
-//                .antMatchers(HttpMethod.GET, "/non-auth").permitAll()
-//                .and()
-                .formLogin(Customizer.withDefaults());
+                    .formLogin(Customizer.withDefaults());
         return http.build();
     }
 

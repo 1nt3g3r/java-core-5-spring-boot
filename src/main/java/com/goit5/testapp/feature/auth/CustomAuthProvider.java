@@ -8,14 +8,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class CustomAuthProvider implements AuthenticationProvider {
     private final CustomUserDetailsService userDetailsPasswordService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -32,7 +36,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
     }
 
     private Authentication checkPassword(UserDetails user, String rawPassword) {
-        if (Objects.equals(rawPassword, user.getPassword())) {
+        if (passwordEncoder.matches(rawPassword, user.getPassword())) {
             User innerUser = new User(
                     user.getUsername(),
                     user.getPassword(),

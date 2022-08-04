@@ -38,3 +38,14 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	archiveFileName = "testapp.jar"
+}
+
+tasks.register('release', Copy) {
+	from './build/libs/testapp.jar'
+	into './'
+}
+
+release.dependsOn bootJar
